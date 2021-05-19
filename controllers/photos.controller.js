@@ -55,17 +55,22 @@ exports.vote = async (req, res) => {
     const ip = requestIp.getClientIp(req); 
     const photoToUpdate = await Photo.findOne({_id: req.params.id});
     const voter = await Voter.findOne({user: ip})
-    console.log(voter.votes);
+    
     if (!photoToUpdate) res.status(404).json({message: 'Not found'});
     else {
       if (voter) {
         if (voter.votes.includes(photoToUpdate._id)) {
           res.status(500).json({message: 'you can\'t vote again for the same photo'})
         } else {
+          console.log('photo  to update ' + photoToUpdate._id);
           voter.votes.push(photoToUpdate._id);
+          console.log('photo  to update votes ' + photoToUpdate.votes);
+          console.log('voter votes ' + voter.votes);
           photoToUpdate.votes++;
           photoToUpdate.save();
           res.send({message: 'OK'});
+          console.log('voter votKONIECCes ' + voter.votes);
+
         }
       } else {
         const newVoter = new Voter({
